@@ -19,17 +19,8 @@
 #       start libevent.sln
 #
 
-cmake_minimum_required(VERSION 3.5 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.10 FATAL_ERROR)
 
-if (POLICY CMP0042)
-    cmake_policy(SET CMP0042 NEW) # MACOSX_RPATH is enabled by default.
-endif()
-if (POLICY CMP0054)
-    cmake_policy(SET CMP0054 NEW)
-endif()
-if (POLICY CMP0068)
-    cmake_policy(SET CMP0068 NEW) # RPATH settings on macOS do not affect install_name.
-endif()
 if (POLICY CMP0074)
     cmake_policy(SET CMP0074 NEW)
 endif()
@@ -1254,14 +1245,16 @@ if (NOT EVENT__DISABLE_TESTS)
     #
     if (NOT EVENT__DISABLE_REGRESS)
         # (We require python to generate the regress tests)
-        find_package(PythonInterp 3)
+        find_package(Python3 COMPONENTS Interpreter)
 
-        if (PYTHONINTERP_FOUND)
+        if (Python3_FOUND)
             set(__FOUND_USABLE_PYTHON 1)
+            set(PYTHON_EXECUTABLE ${Python3_EXECUTABLE})
         else()
-            find_package(PythonInterp 2)
-            if (PYTHONINTERP_FOUND)
+            find_package(Python2 COMPONENTS Interpreter)
+            if (Python2_FOUND)
                 set(__FOUND_USABLE_PYTHON 1)
+                set(PYTHON_EXECUTABLE ${Python2_EXECUTABLE})
             else()
                 message(ERROR "No suitable Python version found, bailing...")
             endif()
